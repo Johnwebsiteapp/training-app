@@ -10,6 +10,7 @@ export default function SettingsPage() {
   const [profile, setProfile] = useState<UserProfile>({
     name: "",
     age: "",
+    height: "",
     weight: "",
     goal: "",
   });
@@ -76,6 +77,19 @@ export default function SettingsPage() {
 
         <div>
           <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+            Wzrost (cm)
+          </label>
+          <input
+            type="number"
+            value={profile.height}
+            onChange={(e) => setProfile({ ...profile, height: e.target.value })}
+            placeholder="np. 180"
+            className="w-full bg-gray-900/80 border border-gray-700 rounded-2xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#c8ff00]/50 transition-colors"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
             Waga (kg)
           </label>
           <input
@@ -133,6 +147,14 @@ export default function SettingsPage() {
                 <span className="text-gray-500 text-sm">Wiek</span>
                 <span className="text-white font-semibold text-sm">
                   {savedProfile.age} lat
+                </span>
+              </div>
+            )}
+            {savedProfile.height && (
+              <div className="flex justify-between">
+                <span className="text-gray-500 text-sm">Wzrost</span>
+                <span className="text-white font-semibold text-sm">
+                  {savedProfile.height} cm
                 </span>
               </div>
             )}

@@ -4,6 +4,7 @@ import { useState } from "react";
 export interface UserProfile {
   name: string;
   age: string;
+  height: string;
   weight: string;
   goal: string;
 }
@@ -17,6 +18,7 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
   const [profile, setProfile] = useState<UserProfile>({
     name: "",
     age: "",
+    height: "",
     weight: "",
     goal: "",
   });
@@ -33,6 +35,13 @@ export default function OnboardingModal({ onComplete }: OnboardingModalProps) {
       key: "age" as const,
       label: "Ile masz lat?",
       placeholder: "np. 25",
+      type: "number",
+      required: false,
+    },
+    {
+      key: "height" as const,
+      label: "Jaki masz wzrost? (cm)",
+      placeholder: "np. 180",
       type: "number",
       required: false,
     },
