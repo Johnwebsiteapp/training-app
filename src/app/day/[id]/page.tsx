@@ -1,5 +1,5 @@
 "use client";
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { trainingPlan } from "@/data/trainingPlan";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -25,6 +25,17 @@ export default function DayPage({
     {}
   );
   const [timerOpen, setTimerOpen] = useState(false);
+
+  // Auto-open timer if one is running in background
+  useEffect(() => {
+    const savedEnd = localStorage.getItem("rest-timer-end");
+    if (savedEnd) {
+      const remaining = Math.round((parseInt(savedEnd, 10) - Date.now()) / 1000);
+      if (remaining > 0 || remaining > -5) {
+        setTimerOpen(true);
+      }
+    }
+  }, []);
 
   if (!day) {
     return (

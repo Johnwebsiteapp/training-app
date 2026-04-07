@@ -11,12 +11,9 @@ export default function RestTimer({ isOpen, onClose }: RestTimerProps) {
   const { timeLeft, isRunning, isFinished, start, reset } = useTimer(90);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !isRunning && !isFinished) {
       start();
     }
-    return () => {
-      reset();
-    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
@@ -78,7 +75,10 @@ export default function RestTimer({ isOpen, onClose }: RestTimerProps) {
         <div className="flex gap-4">
           {isFinished ? (
             <button
-              onClick={onClose}
+              onClick={() => {
+                reset();
+                onClose();
+              }}
               className="px-8 py-3 bg-[#c8ff00] text-black font-bold rounded-xl text-lg hover:bg-[#d4ff33] transition-colors"
             >
               OK, lecę dalej!
