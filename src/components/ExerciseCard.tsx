@@ -20,7 +20,7 @@ export default function ExerciseCard({
   onStartRest,
 }: ExerciseCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const [showNote, setShowNote] = useState(false);
+  const [showNote, setShowNote] = useState(!!note);
 
   return (
     <div
@@ -57,6 +57,11 @@ export default function ExerciseCard({
           {exercise.tip && (
             <p className="text-xs text-gray-500 mt-1 italic">
               {exercise.tip}
+            </p>
+          )}
+          {!expanded && note && (
+            <p className="text-xs text-[#c8ff00]/60 mt-1 truncate">
+              📝 {note}
             </p>
           )}
         </div>
@@ -110,7 +115,7 @@ export default function ExerciseCard({
             }}
             className="text-xs text-gray-500 hover:text-gray-300 text-left transition-colors"
           >
-            {showNote ? "Ukryj notatkę" : "📝 Dodaj notatkę"}
+            {showNote ? "Ukryj notatkę" : note ? "📝 Edytuj notatkę" : "📝 Dodaj notatkę"}
           </button>
 
           {showNote && (
