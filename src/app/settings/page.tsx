@@ -3,6 +3,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import type { UserProfile } from "@/components/OnboardingModal";
+import {
+  formatWeekLabel,
+  formatNoteEntry,
+} from "@/hooks/useWeeklyReset";
+import type { WeekLog } from "@/hooks/useWeeklyReset";
 
 export default function SettingsPage() {
   const [savedProfile, setSavedProfile, isLoaded] =
@@ -15,6 +20,11 @@ export default function SettingsPage() {
     goal: "",
   });
   const [saved, setSaved] = useState(false);
+  const [history] = useLocalStorage<WeekLog[]>("training-history", []);
+  const [currentNotes] = useLocalStorage<Record<string, string>>(
+    "exercise-notes",
+    {}
+  );
 
   useEffect(() => {
     if (isLoaded && savedProfile) {
@@ -177,6 +187,79 @@ export default function SettingsPage() {
           </div>
         </div>
       )}
+
+      {/* Training history */}
+      <div className="px-5 mt-8">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+          Treningi
+        </h2>
+
+        {/* Current week notes */}
+        {Object.values(currentNotes).some((n) => n.trim()) && (
+          <div className="bg-gray-900/60 border border-[#c8ff00]/20 rounded-2xl p-5 mb-3">
+            <h3 className="text-sm font-bold text-[#c8ff00] mb-3">
+              Ten tydzień
+            </h3>
+            <div className="space-y-2">
+              {Object.entries(currentNotes)
+                .filter(([, note]) => note.trim())
+                .map(([id, note]) => (
+                  <p key={id} className="text-gray-300 text-sm">
+                    {formatNoteEntry(id, note)}
+                  </p>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {/* Past weeks */}
+        {history.length > 0 ? (
+          <div className="space-y-3">
+            {history.map((week, i) => {
+              const notesWithContent = Object.entries(week.notes).filter(
+                ([, note]) => note.trim()
+              );
+              const completedCount = Object.values(week.completed).filter(Boolean).length;
+              if (notesWithContent.length === 0 && completedCount === 0)
+                return null;
+              return (
+                <div
+                  key={i}
+                  className="bg-gray-900/60 border border-gray-800/50 rounded-2xl p-5"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-bold text-gray-300">
+                      {formatWeekLabel(week.weekStart)}
+                    </h3>
+                    <span className="text-xs text-gray-500">
+                      {completedCount} ukończonych
+                    </span>
+                  </div>
+                  {notesWithContent.length > 0 ? (
+                    <div className="space-y-2">
+                      {notesWithContent.map(([id, note]) => (
+                        <p key={id} className="text-gray-400 text-sm">
+                          {formatNoteEntry(id, note)}
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600 text-sm italic">
+                      Brak notatek
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="bg-gray-900/60 border border-gray-800/50 rounded-2xl p-5">
+            <p className="text-gray-600 text-sm italic">
+              Historia treningów pojawi się po pierwszym tygodniu
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Bottom nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-[#111]/95 backdrop-blur-lg border-t border-gray-800/50 z-40">

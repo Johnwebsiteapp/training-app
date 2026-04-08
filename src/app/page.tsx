@@ -3,6 +3,7 @@ import WeekSchedule from "@/components/WeekSchedule";
 import OnboardingModal from "@/components/OnboardingModal";
 import type { UserProfile } from "@/components/OnboardingModal";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useWeeklyReset } from "@/hooks/useWeeklyReset";
 import Link from "next/link";
 
 export default function Home() {
@@ -12,6 +13,8 @@ export default function Home() {
 
   const [userProfile, setUserProfile, isLoaded] =
     useLocalStorage<UserProfile | null>("user-profile", null);
+
+  useWeeklyReset();
 
   const handleOnboardingComplete = (profile: UserProfile) => {
     setUserProfile(profile);
